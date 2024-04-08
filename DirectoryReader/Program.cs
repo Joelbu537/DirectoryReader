@@ -198,7 +198,7 @@ class Program
                 string entertext2 = "Enter password to confirm: ";
                 string password2 = CheckPassword(entertext2);
                 string hash2 = getHashSha256(password2);
-                password = null;
+                password2 = null;
                 GC.Collect();
                 if (hash2 == "49f74582bd0a7b97b806e65bd529fbcedaff4b3bdf01b1fd31c63769c8a050d0")
                 {
@@ -238,6 +238,41 @@ class Program
                     Console.ReadKey();
                 }
                 
+                break;
+            case "delete":
+                if(inputs.Length == 2)
+                {
+                    string target_path = Path.Combine(currentpath, inputs[1]);
+                    if (File.Exists(target_path))
+                    {
+                        Console.Clear();
+                        Console.WriteLine($"Are you sure you want to delete {inputs[1]}?");
+                        Console.WriteLine("Press \"y\" to continue");
+                        char key = Console.ReadKey().KeyChar;
+                        if(key == 'y')
+                        {
+                            File.Delete(target_path);
+                            Console.Clear();
+                            Console.WriteLine($"Deleted {target_path}!");
+                            Console.ReadKey();
+                        }
+                        else
+                        {
+                            Console.Clear();
+                        }
+                        File.Delete(target_path);
+                    }
+                    else
+                    {
+                        ThrowError("File does not exist!");
+                        Console.ReadKey();
+                    }
+                }
+                else
+                {
+                    ThrowError("Specify the file to delete!");
+                    Console.ReadKey();
+                }
                 break;
             case "encrypt":
                 Console.Clear();
