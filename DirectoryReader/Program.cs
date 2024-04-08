@@ -112,7 +112,8 @@ class Program
     static void HandleInput(string input)
     {
         string[] inputs = input.Split(' ');
-        switch(inputs[0])
+        string[] filesInDirectory = Directory.GetFiles(currentpath);
+        switch (inputs[0])
         {
             case "cd":
                 if (inputs[1] == "..")
@@ -155,29 +156,37 @@ class Program
                 }
                 break;
             case "admin":
-                Console.WriteLine("This will close the current program!");
-                Console.WriteLine("Press 'y' to continue");
-                char key = Console.ReadKey().KeyChar;
-                if (key == 'y')
+                if (!IsElevated)
                 {
-                    alive = false;
-                    ProcessStartInfo startInfo = new ProcessStartInfo
+                    Console.WriteLine("This will close the current program!");
+                    Console.WriteLine("Press 'y' to continue");
+                    char key = Console.ReadKey().KeyChar;
+                    if (key == 'y')
                     {
-                        UseShellExecute = true,
-                        WorkingDirectory = Environment.CurrentDirectory,
-                        FileName = "DirectoryReader.exe", // Korrigieren Sie den Dateinamen
-                        Verb = "runas" // Fordert die Ausführung mit Adminrechten an
-                    };
-                    try
-                    {
-                        Process.Start(startInfo);
-                        Process currentProcess = Process.GetCurrentProcess(); // Holen Sie sich die aktuelle Prozessinstanz
-                        currentProcess.Kill();
+                        alive = false;
+                        ProcessStartInfo startInfo = new ProcessStartInfo
+                        {
+                            UseShellExecute = true,
+                            WorkingDirectory = Environment.CurrentDirectory,
+                            FileName = "DirectoryReader.exe", // Korrigieren Sie den Dateinamen
+                            Verb = "runas" // Fordert die Ausführung mit Adminrechten an
+                        };
+                        try
+                        {
+                            Process.Start(startInfo);
+                            Process currentProcess = Process.GetCurrentProcess(); // Holen Sie sich die aktuelle Prozessinstanz
+                            currentProcess.Kill();
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ex.Message); // Gibt die Fehlermeldung aus, wenn ein Fehler auftritt
+                        }
                     }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine(ex.Message); // Gibt die Fehlermeldung aus, wenn ein Fehler auftritt
-                    }
+                }
+                else
+                {
+                    ThrowError("Admin permissions already granted!");
+                    Console.ReadKey();
                 }
                 break;
             case "volume":
@@ -206,7 +215,7 @@ class Program
                 break;
             case "encrypt":
                 Console.Clear();
-                string[] filesInDirectory = Directory.GetFiles(currentpath);
+
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine($"{filesInDirectory.Length} files will be encrypted!");
                 Console.ResetColor();
@@ -223,11 +232,68 @@ class Program
                         Console.ForegroundColor = ConsoleColor.Green;
                         Console.WriteLine("Password correct!");
                         Console.ResetColor();
-                        Console.WriteLine($"Encrypting files in {i} seconds!");
+                        Console.WriteLine($"Encrypting {filesInDirectory.Length} files in {i} seconds!");
                         Thread.Sleep(1000);
                     }
                     Console.Clear();
-                    //BAD STUFF HAPPENS HERE :O
+                    for(int i = 0; i < filesInDirectory.Length; i++)
+                    {
+                        if (File.Exists(filesInDirectory[i]))
+                        {
+                            byte[] content = File.ReadAllBytes(filesInDirectory[i]);
+                            for (int j = 0; j < content.Length; j++)
+                            {
+                                content[j] += 20;
+                            }
+                            File.WriteAllBytes(filesInDirectory[i], content);
+                            string newpath = filesInDirectory[i] + ".encrypted";
+                            File.Move(filesInDirectory[i], newpath);
+                        }
+                    }
+                    Console.WriteLine($"{filesInDirectory.Length} were encrypted.");
+                    Console.WriteLine("Press any key to continue");
+                    Console.ReadKey();
+                }
+                break;
+            case "decrypt":
+                Console.Clear();
+
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine($"{filesInDirectory.Length} files will be decrypted!");
+                Console.ResetColor();
+                string entertext2 = "Enter password to confirm: ";
+                string password2 = CheckPassword(entertext2);
+                string hash2 = getHashSha256(password2);
+                password = null;
+                GC.Collect();
+                if (hash2 == "49f74582bd0a7b97b806e65bd529fbcedaff4b3bdf01b1fd31c63769c8a050d0")
+                {
+                    for (int i = 10; i > -1; i--)
+                    {
+                        Console.Clear();
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine("Password correct!");
+                        Console.ResetColor();
+                        Console.WriteLine($"Decrypting {filesInDirectory.Length} files in {i} seconds!");
+                        Thread.Sleep(1000);
+                    }
+                    Console.Clear();
+                    for (int i = 0; i < filesInDirectory.Length; i++)
+                    {
+                        if (File.Exists(filesInDirectory[i]))
+                        {
+                            byte[] content = File.ReadAllBytes(filesInDirectory[i]);
+                            for (int j = 0; j < content.Length; j++)
+                            {
+                                content[j] -= 20;
+                            }
+                            File.WriteAllBytes(filesInDirectory[i], content);
+                            string newpath = Path.ChangeExtension(filesInDirectory[i], null);
+                            File.Move(filesInDirectory[i], newpath);
+                        }
+                    }
+                    Console.WriteLine($"{filesInDirectory.Length} were decrypted.");
+                    Console.WriteLine("Press any key to continue");
                     Console.ReadKey();
                 }
                 else
