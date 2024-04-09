@@ -11,6 +11,10 @@ class Program
     static string currentpath = Directory.GetCurrentDirectory();
     static string workingpath = currentpath;
     static bool alive = true;
+
+    static int stable_version = 0;
+    static int version = 3;
+    static int sub_version = 2;
     static void Main(string[] args)
     {
         bool alive = true;
@@ -106,7 +110,7 @@ class Program
             string firstPart = Path.GetPathRoot(currentpath);
             string lastPart = Path.GetFileName(currentpath);
             string newFilePath = Path.Combine(firstPart, "...", lastPart);
-            Console.Write(newFilePath + "\\");
+            Console.Write(newFilePath + "\\>");
         }
     }
     static void HandleInput(string input)
@@ -233,8 +237,7 @@ class Program
                 else
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("Password incorrect!");
-                    Console.ReadKey();
+                    ThrowError("Password incorrect!");
                     Console.ReadKey();
                 }
                 
@@ -315,19 +318,52 @@ class Program
                     Console.WriteLine("Press any key to continue");
                     Console.ReadKey();
                 }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    ThrowError("Password incorrect!");
+                    Console.ReadKey();
+                }
+                break;
+            case "execute":
+                Console.Clear();
+                if (inputs.Length > 1)
+                {
+                    try
+                    {
+                        Process.Start($"{inputs[1]}");
+                    }
+                    catch (System.ComponentModel.Win32Exception)
+                    {
+                        Console.Clear();
+                        ThrowError("Change working directory to one that includes a working browser!");
+                        Console.ReadKey();
+                    }
+                    catch (Exception ex)
+                    {
+                        ThrowError(ex.Message);
+                        Console.ReadKey();
+                    }
+                }
+                else
+                {
+                    ThrowError("Specify the executable!");
+                    Console.ReadKey();
+                }
+
                 break;
             case "help":
                 Console.Clear();
                 Console.WriteLine("DirectoryReader by Joelbu");
                 Console.ForegroundColor = ConsoleColor.Black;
                 Console.BackgroundColor = ConsoleColor.White;
-                Console.Write("[VERSION]");
+                Console.Write("[VERSION]  ");
                 Console.ResetColor();
-                Console.WriteLine("  0.3.0");
+                Console.WriteLine($"  {stable_version}.{version}.{sub_version}");
                 Console.WriteLine();
                 Console.ForegroundColor = ConsoleColor.Black;
                 Console.BackgroundColor = ConsoleColor.White;
-                Console.WriteLine("[COMMANDS]");
+                Console.WriteLine("[COMMANDS] ");
                 Console.WriteLine();
                 Console.BackgroundColor = ConsoleColor.Red;
                 Console.ForegroundColor= ConsoleColor.White;
@@ -340,9 +376,14 @@ class Program
                 Console.ResetColor();
                 Console.WriteLine(" - decrypt/encrypt all files in the current directory");
                 Console.WriteLine("delete <file>   - delete a specific file");
+                Console.WriteLine("execute <path>  - execute a file/html path");
                 Console.WriteLine("volume <volume> - switch between volumes");
-
+                ////////////////////
                 Console.WriteLine();
+                Console.BackgroundColor = ConsoleColor.Red;
+                Console.Write("Red");
+                Console.ResetColor();
+                Console.WriteLine(" commands need a password and/or admin permissions to be executed!");
                 Console.Write("Press any key to exit");
                 Console.ReadKey();
                 break;
@@ -373,7 +414,6 @@ class Program
             default:
                 Console.ForegroundColor = ConsoleColor.Red;
                 ThrowError("Command unknown. Check if there are any spelling mistakes.");
-                Console.WriteLine("Press any key to continue");
                 Console.ReadKey();
                 break;
         }
