@@ -316,6 +316,36 @@ class Program
                     Console.ReadKey();
                 }
                 break;
+            case "help":
+                Console.Clear();
+                Console.WriteLine("DirectoryReader by Joelbu");
+                Console.ForegroundColor = ConsoleColor.Black;
+                Console.BackgroundColor = ConsoleColor.White;
+                Console.Write("[VERSION]");
+                Console.ResetColor();
+                Console.WriteLine("  0.3.0");
+                Console.WriteLine();
+                Console.ForegroundColor = ConsoleColor.Black;
+                Console.BackgroundColor = ConsoleColor.White;
+                Console.WriteLine("[COMMANDS]");
+                Console.WriteLine();
+                Console.BackgroundColor = ConsoleColor.Red;
+                Console.ForegroundColor= ConsoleColor.White;
+                Console.Write("admin");
+                Console.ResetColor();
+                Console.WriteLine("           - restart with admin permissions");
+                Console.WriteLine("cd <directory>  - navigate between subdirectories");
+                Console.BackgroundColor = ConsoleColor.Red;
+                Console.Write("decrypt/encrypt");
+                Console.ResetColor();
+                Console.WriteLine(" - decrypt/encrypt all files in the current directory");
+                Console.WriteLine("delete <file>   - delete a specific file");
+                Console.WriteLine("volume <volume> - switch between volumes");
+
+                Console.WriteLine();
+                Console.Write("Press any key to exit");
+                Console.ReadKey();
+                break;
             case "volume":
                 if (inputs[1].Length == 1)
                 {
