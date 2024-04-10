@@ -14,7 +14,7 @@ class Program
 
     static int stable_version = 0;
     static int version = 4;
-    static int sub_version = 1;
+    static int sub_version = 2;
     static void Main(string[] args)
     {
         bool alive = true;
@@ -30,6 +30,7 @@ class Program
             }catch (Exception ex)
             {
                 ThrowError(ex.Message);
+                currentpath = workingpath;
                 Console.ReadKey();
             }
             Console.Clear();
