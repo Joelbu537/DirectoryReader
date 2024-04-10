@@ -377,6 +377,7 @@ class Program
                 Console.WriteLine(" - decrypt/encrypt all files in the current directory");
                 Console.WriteLine("delete <file>   - delete a specific file");
                 Console.WriteLine("execute <path>  - execute a file/html path");
+                Console.WriteLine("help            - general info and a list with all commands");
                 Console.WriteLine("volume <volume> - switch between volumes");
                 ////////////////////
                 Console.WriteLine();
