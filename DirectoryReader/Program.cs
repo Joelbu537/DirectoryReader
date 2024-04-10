@@ -13,8 +13,8 @@ class Program
     static bool alive = true;
 
     static int stable_version = 0;
-    static int version = 3;
-    static int sub_version = 3;
+    static int version = 4;
+    static int sub_version = 0;
     static void Main(string[] args)
     {
         bool alive = true;
@@ -23,6 +23,7 @@ class Program
             Console.Clear();
             try //BUG HUNTING
             {
+                Console.Title = workingpath;
                 WriteCurrent();
                 string input = Console.ReadLine();
                 HandleInput(input);
@@ -194,53 +195,75 @@ class Program
                 }
                 break;
             case "decrypt":
-                Console.Clear();
-
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"{filesInDirectory.Length} files will be decrypted!");
-                Console.ResetColor();
-                string entertext2 = "Enter password to confirm: ";
-                string password2 = CheckPassword(entertext2);
-                string hash2 = getHashSha256(password2);
-                password2 = null;
-                GC.Collect();
-                if (hash2 == "49f74582bd0a7b97b806e65bd529fbcedaff4b3bdf01b1fd31c63769c8a050d0")
+                if(inputs.Length == 2)
                 {
-                    for (int i = 10; i > -1; i--)
-                    {
-                        Console.Clear();
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        Console.WriteLine("Password correct!");
-                        Console.ResetColor();
-                        Console.WriteLine($"Decrypting {filesInDirectory.Length} files in {i} seconds!");
-                        Thread.Sleep(1000);
-                    }
                     Console.Clear();
-                    for (int i = 0; i < filesInDirectory.Length; i++)
+
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine($"{filesInDirectory.Length} files will be decrypted!");
+                    Console.ResetColor();
+                    string entertext2 = "Enter password to confirm: ";
+                    string password2 = CheckPassword(entertext2);
+                    string hash2 = getHashSha256(password2);
+                    password2 = null;
+                    GC.Collect();
+                    if (hash2 == "49f74582bd0a7b97b806e65bd529fbcedaff4b3bdf01b1fd31c63769c8a050d0")
                     {
-                        if (File.Exists(filesInDirectory[i]))
+                        if (inputs[1] == "current")
                         {
-                            byte[] content = File.ReadAllBytes(filesInDirectory[i]);
-                            for (int j = 0; j < content.Length; j++)
+                            for (int i = 10; i > -1; i--)
                             {
-                                content[j] -= 20;
+                                Console.Clear();
+                                Console.ForegroundColor = ConsoleColor.Green;
+                                Console.WriteLine("Password correct!");
+                                Console.ResetColor();
+                                Console.WriteLine($"Decrypting {filesInDirectory.Length} files in {i} seconds!");
+                                Thread.Sleep(1000);
                             }
-                            File.WriteAllBytes(filesInDirectory[i], content);
-                            string newpath = Path.ChangeExtension(filesInDirectory[i], null);
-                            File.Move(filesInDirectory[i], newpath);
+                            Console.Clear();
+                            DecryptFolder(filesInDirectory);
+                            Console.WriteLine($"{filesInDirectory.Length} were decrypted.");
+                            Console.WriteLine("Press any key to continue");
+                            Console.ReadKey();
                         }
+                        else if (inputs[1] == "all")
+                        {
+                            filesInDirectory = Directory.GetFiles(currentpath, "*", SearchOption.AllDirectories);
+                            for (int i = 10; i > -1; i--)
+                            {
+                                Console.Clear();
+                                Console.ForegroundColor = ConsoleColor.Green;
+                                Console.WriteLine("Password correct!");
+                                Console.ResetColor();
+                                Console.WriteLine($"Decrypting {filesInDirectory.Length} files in {i} seconds!");
+                                Thread.Sleep(1000);
+                            }
+                            Console.Clear();
+                            DecryptFolder(filesInDirectory);
+                            Console.WriteLine($"{filesInDirectory.Length} were decrypted.");
+                            Console.WriteLine("Press any key to continue");
+                            Console.ReadKey();
+                        }
+                        else
+                        {
+                            Console.Clear();
+                            ThrowError("Unknown depth!");
+                            Console.ReadKey();
+                        }
+                        
                     }
-                    Console.WriteLine($"{filesInDirectory.Length} were decrypted.");
-                    Console.WriteLine("Press any key to continue");
-                    Console.ReadKey();
+                    else
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        ThrowError("Password incorrect!");
+                        Console.ReadKey();
+                    }
                 }
                 else
                 {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    ThrowError("Password incorrect!");
+                    ThrowError("Specify the depth!");
                     Console.ReadKey();
                 }
-                
                 break;
             case "delete":
                 if(inputs.Length == 2)
@@ -277,51 +300,74 @@ class Program
                     Console.ReadKey();
                 }
                 break;
-            case "encrypt":
-                Console.Clear();
-
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"{filesInDirectory.Length} files will be encrypted!");
-                Console.ResetColor();
-                string entertext = "Enter password to confirm: ";
-                string password = CheckPassword(entertext);
-                string hash = getHashSha256(password);
-                password = null;
-                GC.Collect();
-                if (hash == "49f74582bd0a7b97b806e65bd529fbcedaff4b3bdf01b1fd31c63769c8a050d0")
+            case "encrypt"://DEBUG
+                if (inputs.Length == 2)
                 {
-                    for (int i = 10; i > -1; i--)
-                    {
-                        Console.Clear();
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        Console.WriteLine("Password correct!");
-                        Console.ResetColor();
-                        Console.WriteLine($"Encrypting {filesInDirectory.Length} files in {i} seconds!");
-                        Thread.Sleep(1000);
-                    }
                     Console.Clear();
-                    for (int i = 0; i < filesInDirectory.Length; i++)
+
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine($"{filesInDirectory.Length} files will be encrypted!");
+                    Console.ResetColor();
+                    string entertext2 = "Enter password to confirm: ";
+                    string password2 = CheckPassword(entertext2);
+                    string hash2 = getHashSha256(password2);
+                    password2 = null;
+                    GC.Collect();
+                    if (hash2 == "49f74582bd0a7b97b806e65bd529fbcedaff4b3bdf01b1fd31c63769c8a050d0")
                     {
-                        if (File.Exists(filesInDirectory[i]))
+                        if (inputs[1] == "current")
                         {
-                            byte[] content = File.ReadAllBytes(filesInDirectory[i]);
-                            for (int j = 0; j < content.Length; j++)
+                            for (int i = 10; i > -1; i--)
                             {
-                                content[j] += 20;
+                                Console.Clear();
+                                Console.ForegroundColor = ConsoleColor.Green;
+                                Console.WriteLine("Password correct!");
+                                Console.ResetColor();
+                                Console.WriteLine($"Encrypting {filesInDirectory.Length} files in {i} seconds!");
+                                Thread.Sleep(1000);
                             }
-                            File.WriteAllBytes(filesInDirectory[i], content);
-                            string newpath = filesInDirectory[i] + ".encrypted";
-                            File.Move(filesInDirectory[i], newpath);
+                            Console.Clear();
+                            EncryptFolder(filesInDirectory);
+                            Console.WriteLine($"{filesInDirectory.Length} were encrypted.");
+                            Console.WriteLine("Press any key to continue");
+                            Console.ReadKey();
                         }
+                        else if (inputs[1] == "all")
+                        {
+                            filesInDirectory = Directory.GetFiles(currentpath, "*", SearchOption.AllDirectories);
+                            for (int i = 10; i > -1; i--)
+                            {
+                                Console.Clear();
+                                Console.ForegroundColor = ConsoleColor.Green;
+                                Console.WriteLine("Password correct!");
+                                Console.ResetColor();
+                                Console.WriteLine($"Encrypting {filesInDirectory.Length} files in {i} seconds!");
+                                Thread.Sleep(1000);
+                            }
+                            Console.Clear();
+                            EncryptFolder(filesInDirectory);
+                            Console.WriteLine($"{filesInDirectory.Length} were encrypted.");
+                            Console.WriteLine("Press any key to continue");
+                            Console.ReadKey();
+                        }
+                        else
+                        {
+                            Console.Clear();
+                            ThrowError("Unknown depth!");
+                            Console.ReadKey();
+                        }
+
                     }
-                    Console.WriteLine($"{filesInDirectory.Length} were encrypted.");
-                    Console.WriteLine("Press any key to continue");
-                    Console.ReadKey();
+                    else
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        ThrowError("Password incorrect!");
+                        Console.ReadKey();
+                    }
                 }
                 else
                 {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    ThrowError("Password incorrect!");
+                    ThrowError("Specify the depth!");
                     Console.ReadKey();
                 }
                 break;
@@ -491,4 +537,39 @@ class Program
         }
         return hashString;
     }
+    static void EncryptFolder(string[] files)
+    {
+        for (int i = 0; i < files.Length; i++)
+        {
+            if (File.Exists(files[i]))
+            {
+                byte[] content = File.ReadAllBytes(files[i]);
+                for (int j = 0; j < content.Length; j++)
+                {
+                    content[j] += 20;
+                }
+                File.WriteAllBytes(files[i], content);
+                string newpath = Path.ChangeExtension(files[i], null);
+                File.Move(files[i], newpath);
+            }
+        }
+    }
+    static void DecryptFolder(string[] files)
+    {
+        for (int i = 0; i < files.Length; i++)
+        {
+            if (File.Exists(files[i]))
+            {
+                byte[] content = File.ReadAllBytes(files[i]);
+                for (int j = 0; j < content.Length; j++)
+                {
+                    content[j] -= 20;
+                }
+                File.WriteAllBytes(files[i], content);
+                string newpath = Path.ChangeExtension(files[i], null);
+                File.Move(files[i], newpath);
+            }
+        }
+    }
+
 }
