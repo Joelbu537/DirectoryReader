@@ -14,7 +14,7 @@ class Program
 
     static int stable_version = 0;
     static int version = 4;
-    static int sub_version = 0;
+    static int sub_version = 1;
     static void Main(string[] args)
     {
         bool alive = true;
@@ -222,7 +222,7 @@ class Program
                             }
                             Console.Clear();
                             DecryptFolder(filesInDirectory);
-                            Console.WriteLine($"{filesInDirectory.Length} were decrypted.");
+                            Console.WriteLine($"All files were decrypted.");
                             Console.WriteLine("Press any key to continue");
                             Console.ReadKey();
                         }
@@ -235,7 +235,7 @@ class Program
                                 Console.ForegroundColor = ConsoleColor.Green;
                                 Console.WriteLine("Password correct!");
                                 Console.ResetColor();
-                                Console.WriteLine($"Decrypting {filesInDirectory.Length} files in {i} seconds!");
+                                Console.WriteLine($"Decrypting all files in {i} seconds!");
                                 Thread.Sleep(1000);
                             }
                             Console.Clear();
@@ -341,12 +341,12 @@ class Program
                                 Console.ForegroundColor = ConsoleColor.Green;
                                 Console.WriteLine("Password correct!");
                                 Console.ResetColor();
-                                Console.WriteLine($"Encrypting {filesInDirectory.Length} files in {i} seconds!");
+                                Console.WriteLine($"Encrypting all files in {i} seconds!");
                                 Thread.Sleep(1000);
                             }
                             Console.Clear();
                             EncryptFolder(filesInDirectory);
-                            Console.WriteLine($"{filesInDirectory.Length} were encrypted.");
+                            Console.WriteLine($"All were encrypted.");
                             Console.WriteLine("Press any key to continue");
                             Console.ReadKey();
                         }
@@ -550,6 +550,7 @@ class Program
                 }
                 File.WriteAllBytes(files[i], content);
                 string newpath = Path.ChangeExtension(files[i], null);
+                newpath = files[i] + ".encrypted";
                 File.Move(files[i], newpath);
             }
         }
