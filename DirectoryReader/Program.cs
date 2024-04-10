@@ -11,10 +11,11 @@ class Program
     static string currentpath = Directory.GetCurrentDirectory();
     static string workingpath = currentpath;
     static bool alive = true;
+    static string copyfile = "";
 
     static int stable_version = 0;
     static int version = 4;
-    static int sub_version = 2;
+    static int sub_version = 3;
     static void Main(string[] args)
     {
         bool alive = true;
@@ -193,6 +194,27 @@ class Program
                         Console.WriteLine("Press any key to continue");
                         Console.ReadKey();
                     }
+                }
+                break;
+            case "copy":
+                if (inputs.Length == 2)
+                {
+                    if(File.Exists(Path.Combine(currentpath, inputs[1])))
+                    {
+                        copyfile = Path.Combine(currentpath, inputs[1]);
+                        Console.WriteLine("Copied!");
+                        Console.ReadKey();
+                    }
+                    else
+                    {
+                        ThrowError("File does not exist!");
+                        Console.ReadKey();
+                    }
+                }
+                else
+                {
+                    ThrowError("Specify file!");
+                    Console.ReadKey();
                 }
                 break;
             case "decrypt":
@@ -439,6 +461,26 @@ class Program
                 Console.WriteLine(" commands need a password and/or admin permissions to be executed!");
                 Console.Write("Press any key to exit");
                 Console.ReadKey();
+                break;
+            case "paste":
+                if (File.Exists(copyfile))
+                {
+                    try
+                    {
+                        string filename = new FileInfo(copyfile).Name;
+                        File.Copy(copyfile, Path.Combine(currentpath, filename));
+                        Console.WriteLine("File copied!");
+                    }
+                    catch(Exception ex)
+                    {
+                        ThrowError($"{ex.Message}!");
+                        Console.ReadKey();
+                    }
+                }
+                else
+                {
+                    ThrowError("File does not exist anymore!");
+                }
                 break;
             case "volume":
                 if (inputs[1].Length == 1)
