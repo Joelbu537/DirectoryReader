@@ -14,7 +14,7 @@ class Program
 
     static int stable_version = 0;
     static int version = 3;
-    static int sub_version = 2;
+    static int sub_version = 3;
     static void Main(string[] args)
     {
         bool alive = true;
@@ -372,10 +372,15 @@ class Program
                 Console.WriteLine("           - restart with admin permissions");
                 Console.WriteLine("cd <directory>  - navigate between subdirectories");
                 Console.BackgroundColor = ConsoleColor.Red;
-                Console.Write("decrypt/encrypt");
+                Console.Write("decrypt <current/all>");
                 Console.ResetColor();
-                Console.WriteLine(" - decrypt/encrypt all files in the current directory");
+                Console.WriteLine(" - decrypt  all files in the current directory/all subdirectories");
                 Console.WriteLine("delete <file>   - delete a specific file");
+                Console.BackgroundColor = ConsoleColor.Red;
+                Console.Write("encrypt <current/all>");
+                Console.ResetColor();
+                Console.WriteLine(" - encrypt <current/all> all files in the current directory/all subdirectories");
+                Console.WriteLine("encrypt <current/all>");
                 Console.WriteLine("execute <path>  - execute a file/html path");
                 Console.WriteLine("help            - general info and a list with all commands");
                 Console.WriteLine("volume <volume> - switch between volumes");
