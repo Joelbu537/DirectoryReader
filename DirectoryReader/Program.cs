@@ -11,11 +11,12 @@ class Program
     static string currentpath = Directory.GetCurrentDirectory();
     static string workingpath = currentpath;
     static bool alive = true;
-    static string copyfile = "";
+    static string copyfile = null;
+    static List<string> copyfiles;
 
     static int stable_version = 0;
-    static int version = 4;
-    static int sub_version = 3;
+    static int version = 5;
+    static int sub_version = 0;
     static void Main(string[] args)
     {
         bool alive = true;
@@ -78,6 +79,23 @@ class Program
         Console.ResetColor();
         Console.Write(" ");
         Console.WriteLine(currentpath);
+        Console.ForegroundColor = ConsoleColor.Black;
+        Console.BackgroundColor = ConsoleColor.White;
+        Console.Write("[CLIPBOARD]");
+        Console.ResetColor();
+        if(copyfile != null)
+        {
+            Console.WriteLine($" {copyfile}");
+        }
+        else if(copyfiles != null)
+        {
+            Console.WriteLine(" Multiple files");
+        }
+        else if(copyfile == null)
+        {
+            Console.WriteLine(" Empty");
+        }
+        Console.Write(" ");
         string[] filesInDirectory = Directory.GetFiles(currentpath);
         string[] foldersInDirectory = Directory.GetDirectories(currentpath);
         Console.WriteLine();
@@ -201,6 +219,7 @@ class Program
                 {
                     if(File.Exists(Path.Combine(currentpath, inputs[1])))
                     {
+                        copyfiles = null;
                         copyfile = Path.Combine(currentpath, inputs[1]);
                         Console.WriteLine("Copied!");
                         Console.ReadKey();
@@ -211,9 +230,37 @@ class Program
                         Console.ReadKey();
                     }
                 }
+                else if(inputs.Length == 1)
+                {
+                    copyfile = null;
+                    Console.WriteLine("Clipboard emptied!");
+                    Console.ReadKey();
+                }
                 else
                 {
                     ThrowError("Specify file!");
+                    Console.ReadKey();
+                }
+                break;
+            case "copyadd":
+                if(inputs.Length == 2)
+                {
+                    if(File.Exists(Path.Combine(currentpath, inputs[1])))
+                    {
+                        copyfile = null;
+                        copyfiles.Add(Path.Combine(currentpath, inputs[1]));
+                        Console.WriteLine("File added to clipboard!");
+                        Console.ReadKey();
+                    }
+                    else
+                    {
+                        ThrowError("File does not exist!");
+                        Console.ReadKey();
+                    }
+                }
+                else
+                {
+                    ThrowError("Specify File!");
                     Console.ReadKey();
                 }
                 break;
