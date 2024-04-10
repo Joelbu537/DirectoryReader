@@ -29,6 +29,7 @@ class Program
             }catch (Exception ex)
             {
                 ThrowError(ex.Message);
+                currentpath = workingpath;
                 Console.ReadKey();
             }
             Console.Clear();
