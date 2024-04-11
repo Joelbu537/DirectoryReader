@@ -5,13 +5,13 @@
 - GetInput       writes the current volume + the current directory and accepts inputs
 - HandleInput    computes 1 input at aa time
 ### Routine
-WriteCurrent();
-while(true){
-  GetInput();
-  while(Queue.Length != 0){
-    HandleInput();
-  }
-}
+WriteCurrent();  
+while(true){  
+  GetInput();  
+  while(Queue.Length != 0){  
+    HandleInput();  
+  }  
+}  
 ## Multi-Command usage
 Execute multiple commands in a row
 - copy data.txt | copy data2.txt
