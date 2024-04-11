@@ -1,4 +1,10 @@
 # Planned Features
+## Multi-Command usage
+Execute multiple commands in a row
+- copy data.txt | copy data2.txt
+The commands get added to a queue
+A while-loop will work off each command before presenting any results
+## Commands
 ### En / De -crypt
 - en/decrypt [nothing] Encrypts the current directory
 - en/decrypt [all]     Encrypts the current directory and all subdirectories
